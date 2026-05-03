@@ -1,4 +1,5 @@
 const { test, expect, request } = require("@playwright/test");
+const console = require("node:console");
 const loginPayload = {
   userEmail: "lethinhphat7102003@gmail.com",
   userPassword: "Phat123456",
@@ -9,7 +10,7 @@ const orderPayload = {
   ],
 };
 let token;
-
+const orderId;
 test.beforeEach(async () => {
   const apiContext = await request.newContext();
   const loginResponse = await apiContext.post(
@@ -23,7 +24,7 @@ test.beforeEach(async () => {
   const token = loginResponseBody.token;
   console.log("Token:", token);
 
-  apiContext.post(
+  const orderResponse = apiContext.post(
     "https://www.rahulshettyacademy.com/api/ecom/orders/create-order",
 
     {
@@ -34,5 +35,8 @@ test.beforeEach(async () => {
       },
     },
   );
+  const orderResponseJson = await orderResponse.json();
+  console.log(orderResponseJson);
+  orderId = orderResponseJson.orders[0];
 });
 test.beforeAll(async () => {});
